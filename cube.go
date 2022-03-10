@@ -59,7 +59,18 @@ func do_turn(cube [24]CubeColor, turn CubeTurn) [24]CubeColor {
 		// Swap J,R
 		// Swap E,M
 		// Swap F,N
+	case R:
+		turns = [2][4]int{
+			{9, 21, 19, 1}, // J V T B
+			{10, 22, 16, 2}, // K W Q C
+		}
+	case RP:
+		turns = [2][4]int{
+			{9, 1, 19, 21}, // J B T V
+			{10, 2, 16, 22}, // K C Q W
+		}
 	}
+
 	cube = do_rotate(cube, turns[0])
 	cube = do_rotate(cube, turns[1])
 	return cube
