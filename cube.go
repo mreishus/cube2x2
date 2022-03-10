@@ -40,24 +40,39 @@ const (
 // {A, B, C, D, E, F, G, H, I, J,  K,  L,  M,  N,  O,  P,  Q,  R,  S,  T,  U,  V,  W,  X} // blindfold
 
 func do_turn(cube [24]CubeColor, turn CubeTurn) [24]CubeColor {
-	var temp1 CubeColor
-	var temp2 CubeColor
+	var turns [2][4]int
 
 	switch turn {
 	case U:
-		temp1, temp2 = cube[8], cube[9]
-		cube[8], cube[9] = cube[12], cube[13]
-		cube[12], cube[13] = cube[16], cube[17]
-		cube[16], cube[17] = cube[4], cube[5]
-		cube[4], cube[5] = temp1, temp2
+		turns = [2][4]int{
+			{8, 12, 16, 4}, // I M Q E
+			{9, 13, 17, 5}, // J N R F
+		}
 	case UP:
-		temp1, temp2 = cube[8], cube[9]
-		cube[8], cube[9] = cube[4], cube[5]
-		cube[4], cube[5] = cube[16], cube[17]
-		cube[16], cube[17] = cube[12], cube[13]
-		cube[12], cube[13] = temp1, temp2
-
+		turns = [2][4]int{
+			{8, 4, 16, 12}, // I E Q M
+			{9, 5, 17, 13}, // J F R N
+		}
+	case U2:
+		// 4 style turns don't work, I need to do direct swaps...
+		// Swap I,Q
+		// Swap J,R
+		// Swap E,M
+		// Swap F,N
 	}
+	cube = do_rotate(cube, turns[0])
+	cube = do_rotate(cube, turns[1])
+	return cube
+}
+
+func do_rotate(cube [24]CubeColor, is [4]int) [24]CubeColor {
+	var temp CubeColor
+	a, b, c, d := is[0], is[1], is[2], is[3]
+	temp = cube[a]
+	cube[a] = cube[b]
+	cube[b] = cube[c]
+	cube[c] = cube[d]
+	cube[d] = temp
 	return cube
 }
 
@@ -112,7 +127,6 @@ func get_solved_cube() [24]CubeColor {
 	cube := [24]CubeColor{White, White, White, White, Orange, Orange, Orange, Orange, Green, Green, Green, Green, Red, Red, Red, Red, Blue, Blue, Blue, Blue, Yellow, Yellow, Yellow, Yellow}
 	return cube
 }
-
 
 func main() {
 	cube := get_solved_cube()
