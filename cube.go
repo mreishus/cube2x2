@@ -50,6 +50,13 @@ func do_turn(cube [24]CubeColor, turn CubeTurn) [24]CubeColor {
 		cube[12], cube[13] = cube[16], cube[17]
 		cube[16], cube[17] = cube[4], cube[5]
 		cube[4], cube[5] = temp1, temp2
+	case UP:
+		temp1, temp2 = cube[8], cube[9]
+		cube[8], cube[9] = cube[4], cube[5]
+		cube[4], cube[5] = cube[16], cube[17]
+		cube[16], cube[17] = cube[12], cube[13]
+		cube[12], cube[13] = temp1, temp2
+
 	}
 	return cube
 }
@@ -111,5 +118,9 @@ func main() {
 	cube := get_solved_cube()
 	display(cube)
 	cube = do_turn(cube, U)
+	display(cube)
+	cube = do_turn(cube, UP)
+	display(cube)
+	cube = do_turn(cube, UP)
 	display(cube)
 }
