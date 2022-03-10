@@ -2,6 +2,7 @@
 package main
 
 import "fmt"
+import "github.com/jwalton/gchalk"
 
 func AddOne(x int) int {
    return x + 1
@@ -20,4 +21,5 @@ const (
 func main() {
    cube := [24]CubeColor{White, White, White, White, Orange, Orange, Orange, Orange, Green, Green, Green, Green, Red, Red, Red, Red, Blue, Blue, Blue, Blue, Yellow, Yellow, Yellow, Yellow}
    fmt.Println(cube[0])
+   fmt.Println(gchalk.Blue("Hello") + " World" + gchalk.Red("!"))
 }
