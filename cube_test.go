@@ -130,8 +130,8 @@ func TestBFS(t *testing.T) {
 			Yellow, Yellow, Yellow, Yellow} // D
 		got := Bfs(cube)
 		// Two possible solutions
-		want := []CubeTurn{ F2, R2, F2 }
-		want2 := []CubeTurn{ R2, F2, R2 }
+		want := []CubeTurn{F2, R2, F2}
+		want2 := []CubeTurn{R2, F2, R2}
 		if !reflect.DeepEqual(got, want) && !reflect.DeepEqual(got, want2) {
 			t.Errorf("got %q want %q", got, want)
 		}
@@ -161,7 +161,45 @@ func TestBFS(t *testing.T) {
 			Yellow, White, Yellow, Yellow} // D
 
 		got := Bfs(cube)
-		want := []CubeTurn{ U2, R2, UP, R2 }
+		want := []CubeTurn{U2, R2, UP, R2}
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+	t.Run("Find solution for Adjacent Corner Swap", func(t *testing.T) {
+		// PBL Case: Only the White-Green-Red and White-Blue-Red corners need
+		// to be swapped
+		cube := [24]CubeColor{White, White, White, White, // U
+			Orange, Orange, Orange, Orange, // L
+			Green, Red, Green, Green, // F
+			Blue, Green, Red, Red, // R
+			Red, Blue, Blue, Blue, // B
+			Yellow, Yellow, Yellow, Yellow} // D
+
+		// It can't find the full T perm, so give it the first 4 moves
+		cube = DoTurn(cube, R)
+		cube = DoTurn(cube, U)
+		cube = DoTurn(cube, RP)
+		cube = DoTurn(cube, UP)
+		// cube = DoTurn(cube, RP)
+		// cube = DoTurn(cube, F)
+		// cube = DoTurn(cube, R2)
+		// cube = DoTurn(cube, UP)
+		// cube = DoTurn(cube, RP)
+		// cube = DoTurn(cube, UP)
+		// cube = DoTurn(cube, R)
+		// cube = DoTurn(cube, U)
+		// cube = DoTurn(cube, RP)
+		// cube = DoTurn(cube, FP)
+		Display(cube)
+
+		// It finds this new solution:
+		// [R U R' U'] R2 U2 F' U' F U' R
+
+		got := Bfs(cube)
+		PrintMoves(got)
+
+		want := []CubeTurn{R2, U2, FP, UP, F, UP, R}
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %q want %q", got, want)
 		}

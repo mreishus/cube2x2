@@ -144,41 +144,69 @@ func doRotate(cube [24]CubeColor, indexes [4]int) [24]CubeColor {
 	return cube
 }
 
+func PrintMoves(turns []CubeTurn) {
+	for _, turn := range turns {
+		name := ""
+		switch turn {
+		case F:
+			name = "F "
+		case FP:
+			name = "F' "
+		case F2:
+			name = "F2 "
+		case R:
+			name = "R "
+		case RP:
+			name = "R' "
+		case R2:
+			name = "R2 "
+		case U:
+			name = "U "
+		case UP:
+			name = "U' "
+		case U2:
+			name = "U2 "
+		}
+		fmt.Print(name)
+	}
+	fmt.Println("")
+}
+
 // Given a cube, print it to screen
-func display(cube [24]CubeColor) {
+func Display(cube [24]CubeColor) {
 	// Print U
 	fmt.Print("    ")
-	displaySquares(cube, []int{0, 1})
+	DisplaySquares(cube, []int{0, 1})
 	fmt.Println()
 	fmt.Print("    ")
-	displaySquares(cube, []int{3, 2})
+	DisplaySquares(cube, []int{3, 2})
 	fmt.Println()
 	// Print L, F, R, B
-	displaySquares(cube, []int{4, 5, 8, 9, 12, 13, 16, 17})
+	DisplaySquares(cube, []int{4, 5, 8, 9, 12, 13, 16, 17})
 	fmt.Println()
-	displaySquares(cube, []int{7, 6, 11, 10, 15, 14, 19, 18})
+	DisplaySquares(cube, []int{7, 6, 11, 10, 15, 14, 19, 18})
 	fmt.Println()
 	// Print D
 	fmt.Print("    ")
-	displaySquares(cube, []int{20, 21})
+	DisplaySquares(cube, []int{20, 21})
 	fmt.Println()
 	fmt.Print("    ")
-	displaySquares(cube, []int{23, 22})
+	DisplaySquares(cube, []int{23, 22})
 	fmt.Println()
 	fmt.Println()
 }
 
 // Given a cube and a list of indexes, print the colors belonging to those
 // indexes to the screen
-func displaySquares(cube [24]CubeColor, indexes []int) {
+func DisplaySquares(cube [24]CubeColor, indexes []int) {
 	for _, x := range indexes {
-		displaySquare(cube[x])
-		displaySquare(cube[x])
+		DisplaySquare(cube[x])
+		DisplaySquare(cube[x])
 	}
 }
 
 // Given a cube color, print it to screen
-func displaySquare(cc CubeColor) {
+func DisplaySquare(cc CubeColor) {
 	block := "█"
 	switch cc {
 	case White:
@@ -254,22 +282,22 @@ func Bfs(cube [24]CubeColor) []CubeTurn {
 			newState := searchState{cube: newCube, path: newPath}
 			q = append(q, newState)
 		}
-		// display(state.cube)
+		// Display(state.cube)
 	}
 	return []CubeTurn{}
 }
 
 func main() {
 	cube := GetSolvedCube()
-	display(cube)
+	Display(cube)
 	// for i := 0; i < 6; i += 1 {
 	// 	cube = SMove(cube)
-	// 	display(cube)
+	// 	Display(cube)
 	// }
 	cube = DoTurn(cube, R)
-	display(cube)
+	Display(cube)
 	cube = DoTurn(cube, F2)
-	display(cube)
+	Display(cube)
 
 	cube = [24]CubeColor{White, White, White, White, // U
 		Orange, Red, Red, Orange, // L
@@ -277,7 +305,7 @@ func main() {
 		Red, Orange, Orange, Red, // R
 		Green, Blue, Blue, Green, // B
 		Yellow, Yellow, Yellow, Yellow} // D
-	display(cube)
+	Display(cube)
 	Bfs(cube)
 
 	cube = [24]CubeColor{White, White, White, White, // U
@@ -286,10 +314,10 @@ func main() {
 		Red, Orange, Orange, Red, // R
 		Green, Blue, Blue, Green, // B
 		Yellow, Yellow, Yellow, Yellow} // D
-	display(cube)
+	Display(cube)
 	Bfs(cube)
 	// cube = DoTurn(cube, R2)
 	// cube = DoTurn(cube, F2)
 	// cube = DoTurn(cube, R2)
-	// display(cube)
+	// Display(cube)
 }
