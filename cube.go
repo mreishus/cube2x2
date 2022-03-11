@@ -29,6 +29,11 @@ const (
 	U2
 )
 
+type searchState struct {
+	cube [24]CubeColor
+	path []CubeTurn
+}
+
 // Ignore L, D, and B based turns, since it's a 2x2
 // Also ignore cube rotations
 
@@ -198,6 +203,42 @@ func SMove(cube [24]CubeColor) [24]CubeColor {
 	return cube
 }
 
+func nextStates(cube [24]CubeColor) map[CubeTurn][24]CubeColor {
+	turns := []CubeTurn{ F, FP, F2, R, RP, R2, U, UP, U2, }
+	m := make(map[CubeTurn][24]CubeColor)
+	for _, turn := range turns {
+		m[turn] = DoTurn(cube, turn)
+	}
+	return m
+}
+
+func bfs(cube [24]CubeColor) {
+	var state searchState
+
+	q := make([]searchState, 1)
+	q[0] = searchState{cube: cube, path: []CubeTurn{}}
+
+	for len(q) > 0 {
+		state, q = q[0], q[1:]
+
+		if (state.cube == GetSolvedCube()) {
+			fmt.Println("Found solution: ")
+			fmt.Println(state.path)
+			return
+		}
+
+		for turn, newCube := range nextStates(state.cube) {
+			newPath := make([]CubeTurn, len(state.path), len(state.path)+1)
+			copy(newPath, state.path)
+			newPath = append(newPath, turn)
+
+			newState := searchState{cube: newCube, path: newPath}
+			q = append(q, newState)
+		}
+		// display(state.cube)
+	}
+}
+
 func main() {
 	cube := GetSolvedCube()
 	display(cube)
@@ -209,4 +250,17 @@ func main() {
 	display(cube)
 	cube = DoTurn(cube, F2)
 	display(cube)
+
+	cube = [24]CubeColor{White, White, White, White, // U
+			Orange, Red, Red, Orange, // L
+			Blue, Green, Green, Blue, // F
+			Red, Orange, Orange, Red, // R
+			Green, Blue, Blue, Green, // B
+			Yellow, Yellow, Yellow, Yellow} // D
+	display(cube)
+	bfs(cube)
+	// cube = DoTurn(cube, R2)
+	// cube = DoTurn(cube, F2)
+	// cube = DoTurn(cube, R2)
+	// display(cube)
 }
