@@ -243,8 +243,17 @@ func SMove(cube [24]CubeColor) [24]CubeColor {
 // Given a cube, return a map of all possible next states
 // key = CubeTurn
 // value = New Cube
-func nextStates(cube [24]CubeColor) map[CubeTurn][24]CubeColor {
-	turns := []CubeTurn{F, FP, F2, R, RP, R2, U, UP, U2}
+func nextStates(cube [24]CubeColor, lastTurn CubeTurn) map[CubeTurn][24]CubeColor {
+	var turns []CubeTurn
+	if lastTurn == F || lastTurn == FP || lastTurn == F2 {
+		turns = []CubeTurn{R, RP, R2, U, UP, U2}
+	} else if lastTurn == R || lastTurn == RP || lastTurn == R2 {
+		turns = []CubeTurn{F, FP, F2, U, UP, U2}
+	} else if lastTurn == U || lastTurn == UP || lastTurn == U2 {
+		turns = []CubeTurn{F, FP, F2, R, RP, R2}
+	} else {
+		turns = []CubeTurn{F, FP, F2, R, RP, R2, U, UP, U2}
+	}
 	m := make(map[CubeTurn][24]CubeColor)
 	for _, turn := range turns {
 		m[turn] = DoTurn(cube, turn)
@@ -261,6 +270,8 @@ func Bfs(cube [24]CubeColor) []CubeTurn {
 	q[0] = searchState{cube: cube, path: []CubeTurn{}}
 
 	maxDepth := 0
+	lastTurn := NullTurn
+	seen := make(map[[24]CubeColor]bool)
 
 	for len(q) > 0 {
 
@@ -270,12 +281,23 @@ func Bfs(cube [24]CubeColor) []CubeTurn {
 
 		state, q = q[0], q[1:]
 
+		if seen[state.cube] {
+			continue
+		}
+		seen[state.cube] = true
+
 		if state.cube == GetSolvedCube() {
 			fmt.Printf("bfs: maxDepth was %d\n", maxDepth)
 			return state.path
 		}
 
-		for turn, newCube := range nextStates(state.cube) {
+		if len(state.path) > 0 {
+			lastTurn = state.path[len(state.path)-1]
+		} else {
+			lastTurn = NullTurn
+		}
+
+		for turn, newCube := range nextStates(state.cube, lastTurn) {
 			newPath := make([]CubeTurn, len(state.path), len(state.path)+1)
 			copy(newPath, state.path)
 			newPath = append(newPath, turn)
@@ -321,4 +343,5 @@ func main() {
 	// cube = DoTurn(cube, F2)
 	// cube = DoTurn(cube, R2)
 	// Display(cube)
+
 }
