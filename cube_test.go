@@ -1,6 +1,7 @@
 package main
 
 import "testing"
+import "reflect"
 
 func TestSMoves(t *testing.T) {
 	t.Run("6 SMoves Restores the Cube", func(t *testing.T) {
@@ -114,6 +115,54 @@ func Test2Turns(t *testing.T) {
 			Red, Orange, Blue, Red, // B
 			Red, White, Green, Yellow} // D
 		if got != want {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+}
+
+func TestBFS(t *testing.T) {
+	t.Run("Find solution for PBL No Bar", func(t *testing.T) {
+		cube := [24]CubeColor{White, White, White, White, // U
+			Orange, Red, Red, Orange, // L
+			Blue, Green, Green, Blue, // F
+			Red, Orange, Orange, Red, // R
+			Green, Blue, Blue, Green, // B
+			Yellow, Yellow, Yellow, Yellow} // D
+		got := Bfs(cube)
+		// Two possible solutions
+		want := []CubeTurn{ F2, R2, F2 }
+		want2 := []CubeTurn{ R2, F2, R2 }
+		if !reflect.DeepEqual(got, want) && !reflect.DeepEqual(got, want2) {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+	t.Run("Find solution for PBL Two Bar (Partial)", func(t *testing.T) {
+		// Full PBL fails - Maybe because I don't have B moves
+		// and reoriented solutions don't count?
+
+		// cube := [24]CubeColor{White, White, White, White, // U
+		// 	Blue, Orange, Orange, Blue, // L
+		// 	Green, Green, Green, Green, // F
+		// 	Red, Blue, Blue, Red, // R
+		// 	Orange, Red, Red, Orange, // B
+		// 	Yellow, Yellow, Yellow, Yellow} // D
+
+		// R2 U' B2 U2 R2 U' R2
+
+		// Here is a cube where I've partially done the PBL Two bar solution
+		// Start with PBL Two Bar, then apply first 3 moves:
+		// We've done: R2 U' B2
+		// We want to get back: U2 R2 U' R2
+		cube := [24]CubeColor{White, Yellow, White, White, // U
+			Red, Red, Orange, Orange, // L
+			Blue, Orange, Orange, Green, // F
+			Green, Blue, Green, Blue, // R
+			Red, Green, Blue, Red, // B
+			Yellow, White, Yellow, Yellow} // D
+
+		got := Bfs(cube)
+		want := []CubeTurn{ U2, R2, UP, R2 }
+		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %q want %q", got, want)
 		}
 	})

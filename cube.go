@@ -223,18 +223,26 @@ func nextStates(cube [24]CubeColor) map[CubeTurn][24]CubeColor {
 	return m
 }
 
-// BFS. Given a cube, return a list of turns needed to make that
+// Bfs. Given a cube, return a list of turns needed to make that
 // cube solved
-func bfs(cube [24]CubeColor) []CubeTurn {
+func Bfs(cube [24]CubeColor) []CubeTurn {
 	var state searchState
 
 	q := make([]searchState, 1)
 	q[0] = searchState{cube: cube, path: []CubeTurn{}}
 
+	maxDepth := 0
+
 	for len(q) > 0 {
+
+		if len(q) > maxDepth {
+			maxDepth = len(q)
+		}
+
 		state, q = q[0], q[1:]
 
 		if state.cube == GetSolvedCube() {
+			fmt.Printf("bfs: maxDepth was %d\n", maxDepth)
 			return state.path
 		}
 
@@ -270,7 +278,16 @@ func main() {
 		Green, Blue, Blue, Green, // B
 		Yellow, Yellow, Yellow, Yellow} // D
 	display(cube)
-	bfs(cube)
+	Bfs(cube)
+
+	cube = [24]CubeColor{White, White, White, White, // U
+		Orange, Red, Red, Orange, // L
+		Blue, Green, Green, Blue, // F
+		Red, Orange, Orange, Red, // R
+		Green, Blue, Blue, Green, // B
+		Yellow, Yellow, Yellow, Yellow} // D
+	display(cube)
+	Bfs(cube)
 	// cube = DoTurn(cube, R2)
 	// cube = DoTurn(cube, F2)
 	// cube = DoTurn(cube, R2)
