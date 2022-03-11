@@ -69,7 +69,7 @@ func TestFTurns(t *testing.T) {
 	})
 }
 
-func Test2Turns(t * testing.T) {
+func Test2Turns(t *testing.T) {
 	t.Run("R F2", func(t *testing.T) {
 		cube1 := GetSolvedCube()
 		cube1 = DoTurn(cube1, R)
@@ -80,7 +80,7 @@ func Test2Turns(t * testing.T) {
 			Yellow, Green, Green, Yellow, // F
 			Orange, Red, Red, Orange, // R
 			White, Blue, Blue, White, // B
-			Green, White, Blue, Yellow,} // D
+			Green, White, Blue, Yellow} // D
 		if got != want {
 			t.Errorf("got %q want %q", got, want)
 		}

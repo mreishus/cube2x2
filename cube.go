@@ -43,6 +43,7 @@ type searchState struct {
 // {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23} // index
 // {A, B, C, D, E, F, G, H, I, J,  K,  L,  M,  N,  O,  P,  Q,  R,  S,  T,  U,  V,  W,  X} // blindfold
 
+// Given a Cube, and a Turn, apply the turn to the cube and return a new cube
 func DoTurn(cube [24]CubeColor, turn CubeTurn) [24]CubeColor {
 	var turns [][4]int
 
@@ -130,9 +131,11 @@ func DoTurn(cube [24]CubeColor, turn CubeTurn) [24]CubeColor {
 	return cube
 }
 
-func doRotate(cube [24]CubeColor, is [4]int) [24]CubeColor {
+// Given a cube, and a list of 4 indexes, do an "array rotation" of the
+// colors belonging to those indexes, and return the new cube
+func doRotate(cube [24]CubeColor, indexes [4]int) [24]CubeColor {
 	var temp CubeColor
-	a, b, c, d := is[0], is[1], is[2], is[3]
+	a, b, c, d := indexes[0], indexes[1], indexes[2], indexes[3]
 	temp = cube[a]
 	cube[a] = cube[b]
 	cube[b] = cube[c]
@@ -141,6 +144,7 @@ func doRotate(cube [24]CubeColor, is [4]int) [24]CubeColor {
 	return cube
 }
 
+// Given a cube, print it to screen
 func display(cube [24]CubeColor) {
 	// Print U
 	fmt.Print("    ")
@@ -164,6 +168,8 @@ func display(cube [24]CubeColor) {
 	fmt.Println()
 }
 
+// Given a cube and a list of indexes, print the colors belonging to those
+// indexes to the screen
 func displaySquares(cube [24]CubeColor, indexes []int) {
 	for _, x := range indexes {
 		displaySquare(cube[x])
@@ -171,6 +177,7 @@ func displaySquares(cube [24]CubeColor, indexes []int) {
 	}
 }
 
+// Given a cube color, print it to screen
 func displaySquare(cc CubeColor) {
 	block := "█"
 	switch cc {
@@ -189,22 +196,26 @@ func displaySquare(cc CubeColor) {
 	}
 }
 
+// Return a fully solved cube
 func GetSolvedCube() [24]CubeColor {
 	cube := [24]CubeColor{White, White, White, White, Orange, Orange, Orange, Orange, Green, Green, Green, Green, Red, Red, Red, Red, Blue, Blue, Blue, Blue, Yellow, Yellow, Yellow, Yellow}
 	return cube
 }
 
+// Given a cube, return a cube after an "SMove" has been applied, or R U R' U'
 func SMove(cube [24]CubeColor) [24]CubeColor {
 	cube = DoTurn(cube, R)
 	cube = DoTurn(cube, U)
 	cube = DoTurn(cube, RP)
 	cube = DoTurn(cube, UP)
-	// display(cube)
 	return cube
 }
 
+// Given a cube, return a map of all possible next states
+// key = CubeTurn
+// value = New Cube
 func nextStates(cube [24]CubeColor) map[CubeTurn][24]CubeColor {
-	turns := []CubeTurn{ F, FP, F2, R, RP, R2, U, UP, U2, }
+	turns := []CubeTurn{F, FP, F2, R, RP, R2, U, UP, U2}
 	m := make(map[CubeTurn][24]CubeColor)
 	for _, turn := range turns {
 		m[turn] = DoTurn(cube, turn)
@@ -212,7 +223,9 @@ func nextStates(cube [24]CubeColor) map[CubeTurn][24]CubeColor {
 	return m
 }
 
-func bfs(cube [24]CubeColor) {
+// BFS. Given a cube, return a list of turns needed to make that
+// cube solved
+func bfs(cube [24]CubeColor) []CubeTurn {
 	var state searchState
 
 	q := make([]searchState, 1)
@@ -221,10 +234,8 @@ func bfs(cube [24]CubeColor) {
 	for len(q) > 0 {
 		state, q = q[0], q[1:]
 
-		if (state.cube == GetSolvedCube()) {
-			fmt.Println("Found solution: ")
-			fmt.Println(state.path)
-			return
+		if state.cube == GetSolvedCube() {
+			return state.path
 		}
 
 		for turn, newCube := range nextStates(state.cube) {
@@ -237,6 +248,7 @@ func bfs(cube [24]CubeColor) {
 		}
 		// display(state.cube)
 	}
+	return []CubeTurn{}
 }
 
 func main() {
@@ -252,11 +264,11 @@ func main() {
 	display(cube)
 
 	cube = [24]CubeColor{White, White, White, White, // U
-			Orange, Red, Red, Orange, // L
-			Blue, Green, Green, Blue, // F
-			Red, Orange, Orange, Red, // R
-			Green, Blue, Blue, Green, // B
-			Yellow, Yellow, Yellow, Yellow} // D
+		Orange, Red, Red, Orange, // L
+		Blue, Green, Green, Blue, // F
+		Red, Orange, Orange, Red, // R
+		Green, Blue, Blue, Green, // B
+		Yellow, Yellow, Yellow, Yellow} // D
 	display(cube)
 	bfs(cube)
 	// cube = DoTurn(cube, R2)
