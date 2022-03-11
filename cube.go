@@ -61,6 +61,15 @@ func DoTurn(cube [24]CubeColor, turn CubeTurn) [24]CubeColor {
 		// Swap E,M
 		// Swap F,N
 		// Also rotate the U face
+		// Hack, do U turns twice
+		turns = [][4]int{
+			{8, 12, 16, 4}, // I M Q E
+			{9, 13, 17, 5}, // J N R F
+			{0, 3, 2, 1},   // A D C B
+			{8, 12, 16, 4}, // I M Q E
+			{9, 13, 17, 5}, // J N R F
+			{0, 3, 2, 1},   // A D C B
+		}
 	case R:
 		turns = [][4]int{
 			{9, 21, 19, 1},   // J V T B
@@ -76,6 +85,15 @@ func DoTurn(cube [24]CubeColor, turn CubeTurn) [24]CubeColor {
 	case R2:
 		// 4 style turns don't work, I need to do direct swaps...
 		// Also rotate the R face
+		// Hack, do R turns twice
+		turns = [][4]int{
+			{9, 21, 19, 1},   // J V T B
+			{10, 22, 16, 2},  // K W Q C
+			{12, 15, 14, 13}, // M P O N
+			{9, 21, 19, 1},   // J V T B
+			{10, 22, 16, 2},  // K W Q C
+			{12, 15, 14, 13}, // M P O N
+		}
 	case F:
 		turns = [][4]int{
 			{3, 6, 21, 12}, // D G V M
@@ -90,7 +108,15 @@ func DoTurn(cube [24]CubeColor, turn CubeTurn) [24]CubeColor {
 		}
 	case F2:
 		// 4 style turns don't work, I need to do direct swaps...
-		// Also rotate the F face
+		// Hack, do F turns twice :)
+		turns = [][4]int{
+			{3, 6, 21, 12}, // D G V M
+			{2, 5, 20, 15}, // C F U P
+			{8, 11, 10, 9}, // I L K J
+			{3, 6, 21, 12}, // D G V M
+			{2, 5, 20, 15}, // C F U P
+			{8, 11, 10, 9}, // I L K J
+		}
 	}
 
 	for _, turn := range turns {
@@ -181,10 +207,6 @@ func main() {
 	// }
 	cube = DoTurn(cube, R)
 	display(cube)
-	cube = DoTurn(cube, FP)
-	display(cube)
-	cube = DoTurn(cube, R)
-	display(cube)
-	cube = DoTurn(cube, FP)
+	cube = DoTurn(cube, F2)
 	display(cube)
 }

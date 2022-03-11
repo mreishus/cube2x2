@@ -33,7 +33,7 @@ func TestSMoves(t *testing.T) {
 }
 
 func TestFTurns(t *testing.T) {
-	t.Run("RFRF", func(t *testing.T) {
+	t.Run("R F R F", func(t *testing.T) {
 		cube1 := GetSolvedCube()
 		cube1 = DoTurn(cube1, R)
 		cube1 = DoTurn(cube1, F)
@@ -50,7 +50,7 @@ func TestFTurns(t *testing.T) {
 			t.Errorf("got %q want %q", got, want)
 		}
 	})
-	t.Run("RF'RF'", func(t *testing.T) {
+	t.Run("R F' R F'", func(t *testing.T) {
 		cube1 := GetSolvedCube()
 		cube1 = DoTurn(cube1, R)
 		cube1 = DoTurn(cube1, FP)
@@ -63,6 +63,56 @@ func TestFTurns(t *testing.T) {
 			White, Blue, Red, Orange, // R
 			Red, Blue, Blue, Green, // B
 			Green, White, White, Yellow} // D
+		if got != want {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+}
+
+func Test2Turns(t * testing.T) {
+	t.Run("R F2", func(t *testing.T) {
+		cube1 := GetSolvedCube()
+		cube1 = DoTurn(cube1, R)
+		cube1 = DoTurn(cube1, F2)
+		got := cube1
+		want := [24]CubeColor{White, Green, Yellow, Blue, // U
+			Orange, Red, Red, Orange, // L
+			Yellow, Green, Green, Yellow, // F
+			Orange, Red, Red, Orange, // R
+			White, Blue, Blue, White, // B
+			Green, White, Blue, Yellow,} // D
+		if got != want {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+	t.Run("R F U2", func(t *testing.T) {
+		cube1 := GetSolvedCube()
+		cube1 = DoTurn(cube1, R)
+		cube1 = DoTurn(cube1, F)
+		cube1 = DoTurn(cube1, U2)
+		got := cube1
+		want := [24]CubeColor{Orange, Orange, White, Green, // U
+			White, Red, Blue, Orange, // L
+			White, Blue, Yellow, Yellow, // F
+			Orange, Yellow, Red, Green, // R
+			Green, Green, Blue, White, // B
+			Red, Red, Blue, Yellow} // D
+		if got != want {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+	t.Run("U F R2", func(t *testing.T) {
+		cube1 := GetSolvedCube()
+		cube1 = DoTurn(cube1, U)
+		cube1 = DoTurn(cube1, F)
+		cube1 = DoTurn(cube1, R2)
+		got := cube1
+		want := [24]CubeColor{White, Blue, Yellow, Orange, // U
+			Green, Yellow, Yellow, Orange, // L
+			Green, Blue, Orange, Green, // F
+			Red, White, White, Blue, // R
+			Red, Orange, Blue, Red, // B
+			Red, White, Green, Yellow} // D
 		if got != want {
 			t.Errorf("got %q want %q", got, want)
 		}
