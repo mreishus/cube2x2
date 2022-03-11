@@ -322,23 +322,30 @@ func main() {
 	cube = DoTurn(cube, F2)
 	Display(cube)
 
-	cube = [24]CubeColor{White, White, White, White, // U
-		Orange, Red, Red, Orange, // L
-		Blue, Green, Green, Blue, // F
-		Red, Orange, Orange, Red, // R
-		Green, Blue, Blue, Green, // B
-		Yellow, Yellow, Yellow, Yellow} // D
+	fmt.Println("")
+	fmt.Println("---")
+	fmt.Println("")
+	// Here is a cube I randomly scrambled, then transcribed
+	cube = [24]CubeColor{
+		Blue, Yellow, Orange, Yellow, // U
+		Yellow, Red, White, Orange, // L
+		Green, White, Red, Green, // F
+		Blue, Green, Red, Green, // R
+		Orange, Red, Blue, White, // B
+		Orange, White, Blue, Yellow, // D
+	}
+	fmt.Println("Trying to solve this cube: ")
 	Display(cube)
-	Bfs(cube)
+	solution := Bfs(cube)
+	fmt.Println("Found solution:")
+	PrintMoves(solution)
 
-	cube = [24]CubeColor{White, White, White, White, // U
-		Orange, Red, Red, Orange, // L
-		Blue, Green, Green, Blue, // F
-		Red, Orange, Orange, Red, // R
-		Green, Blue, Blue, Green, // B
-		Yellow, Yellow, Yellow, Yellow} // D
-	Display(cube)
-	Bfs(cube)
+	for _, turn := range solution {
+		PrintMoves([]CubeTurn{turn})
+		cube = DoTurn(cube, turn)
+		Display(cube)
+	}
+
 	// cube = DoTurn(cube, R2)
 	// cube = DoTurn(cube, F2)
 	// cube = DoTurn(cube, R2)
