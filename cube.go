@@ -4,10 +4,6 @@ package main
 import "fmt"
 import "github.com/jwalton/gchalk"
 
-func AddOne(x int) int {
-	return x + 1
-}
-
 type CubeColor int8
 
 const (
@@ -33,13 +29,16 @@ const (
 	U2
 )
 
+// Ignore L, D, and B based turns, since it's a 2x2
+// Also ignore cube rotations
+
 // Cube in different formats:
 // {W, W, W, W, O, O, O, O, G, G, G,   G,  R,  R,  R,  R,  B,  B,  B,  B,  Y,  Y,  Y,  Y} // color
 // {U, U, U, U, L, L, L, L, F, F, F,   F,  R,  R,  R,  R,  B,  B,  B,  B,  D,  D,  D,  D} // face
 // {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23} // index
 // {A, B, C, D, E, F, G, H, I, J,  K,  L,  M,  N,  O,  P,  Q,  R,  S,  T,  U,  V,  W,  X} // blindfold
 
-func doTurn(cube [24]CubeColor, turn CubeTurn) [24]CubeColor {
+func DoTurn(cube [24]CubeColor, turn CubeTurn) [24]CubeColor {
 	var turns [][4]int
 
 	switch turn {
@@ -78,7 +77,17 @@ func doTurn(cube [24]CubeColor, turn CubeTurn) [24]CubeColor {
 		// 4 style turns don't work, I need to do direct swaps...
 		// Also rotate the R face
 	case F:
+		turns = [][4]int{
+			{3, 6, 21, 12}, // D G V M
+			{2, 5, 20, 15}, // C F U P
+			{8, 11, 10, 9}, // I L K J
+		}
 	case FP:
+		turns = [][4]int{
+			{3, 12, 21, 6}, // D M V G
+			{2, 15, 20, 5}, // C P U F
+			{8, 9, 10, 11}, // I J K L
+		}
 	case F2:
 		// 4 style turns don't work, I need to do direct swaps...
 		// Also rotate the F face
@@ -155,10 +164,10 @@ func GetSolvedCube() [24]CubeColor {
 }
 
 func SMove(cube [24]CubeColor) [24]CubeColor {
-	cube = doTurn(cube, R)
-	cube = doTurn(cube, U)
-	cube = doTurn(cube, RP)
-	cube = doTurn(cube, UP)
+	cube = DoTurn(cube, R)
+	cube = DoTurn(cube, U)
+	cube = DoTurn(cube, RP)
+	cube = DoTurn(cube, UP)
 	// display(cube)
 	return cube
 }
@@ -166,16 +175,16 @@ func SMove(cube [24]CubeColor) [24]CubeColor {
 func main() {
 	cube := GetSolvedCube()
 	display(cube)
-	cube = SMove(cube)
+	// for i := 0; i < 6; i += 1 {
+	// 	cube = SMove(cube)
+	// 	display(cube)
+	// }
+	cube = DoTurn(cube, R)
 	display(cube)
-	cube = SMove(cube)
+	cube = DoTurn(cube, FP)
 	display(cube)
-	cube = SMove(cube)
+	cube = DoTurn(cube, R)
 	display(cube)
-	cube = SMove(cube)
-	display(cube)
-	cube = SMove(cube)
-	display(cube)
-	cube = SMove(cube)
+	cube = DoTurn(cube, FP)
 	display(cube)
 }
