@@ -18,7 +18,8 @@ const (
 type CubeTurn int8
 
 const (
-	F CubeTurn = iota
+	NullTurn CubeTurn = iota
+	F
 	FP
 	F2
 	R

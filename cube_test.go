@@ -33,6 +33,18 @@ func TestSMoves(t *testing.T) {
 	})
 }
 
+func TestNullTurn(t *testing.T) {
+	t.Run("Null Turn doesn't change cube", func(t *testing.T) {
+		cube1 := GetSolvedCube()
+		cube1 = DoTurn(cube1, NullTurn)
+		got := cube1
+		want := GetSolvedCube()
+		if got != want {
+			t.Errorf("got %q want %q", got, want)
+		}
+	})
+}
+
 func TestFTurns(t *testing.T) {
 	t.Run("R F R F", func(t *testing.T) {
 		cube1 := GetSolvedCube()
